@@ -12,7 +12,6 @@ from pptx import Presentation
 from pptx.util import Inches
 from datetime import date
 from PIL import Image
-import requests
 import os
 from io import BytesIO
 from langchain.chat_models import ChatOpenAI
@@ -20,6 +19,7 @@ from langchain.schema import HumanMessage, SystemMessage
 import traceback
 import re
 import ast
+from security import safe_requests
 
 
 # hide future warnings (caused by st_aggrid)
@@ -78,7 +78,7 @@ def resize_image(url):
     """function to resize logos while keeping aspect ratio. Accepts URL as an argument and return an image object"""
 
     # Open the image file
-    image = Image.open(requests.get(url, stream=True).raw)
+    image = Image.open(safe_requests.get(url, stream=True).raw)
 
     # if a logo is too high or too wide then make the background container twice as big
     if image.height > 140:
@@ -583,7 +583,7 @@ elif submit and response_df is not None:
                 replace_text(replaces_2, summary_slide)
 
                 # check if a logo ulr returns code 200 (working link)
-                if requests.get(logo_url).status_code == 200:
+                if safe_requests.get(logo_url).status_code == 200:
                     #create logo image object
                     logo = resize_image(logo_url)
                     logo.save('logo.png')
@@ -725,7 +725,7 @@ elif submit and response_df is not None:
 
                     for l in logo_list:
                         # check if a logo ulr returns code 200 (working link)
-                        if requests.get(l).status_code == 200:
+                        if safe_requests.get(l).status_code == 200:
                             # create logo image object
                             logo = resize_image(l)
                             logo.save('logo.png')
