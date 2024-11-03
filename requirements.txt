@@ -11,3 +11,4 @@ kaleido
 openai
 snowflake-connector-python
 langchain
+security==1.3.1
